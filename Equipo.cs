@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Torneo_de_Futbol
@@ -10,7 +11,7 @@ namespace Torneo_de_Futbol
     {
         //Atributos
         private string Nombre; //unico con get y set por ahora
-        private int Grupo;
+        private string Grupo;
         private int PartidosJugados;
         private int PartidosGanados;
         private int PartidosEmpatados;
@@ -20,7 +21,9 @@ namespace Torneo_de_Futbol
         private int PuntosTotales;
         private int PosicionTabla;
 
+
         //Constructores
+
 
         public Equipo() //sin parametros inicializa vacio
         {
@@ -29,6 +32,7 @@ namespace Torneo_de_Futbol
         public Equipo(string NuevoNombre) //aqui mando el nombre nomas
         {
             this.Nombre= NuevoNombre;
+            this.Grupo = "";
         }
 
        
@@ -43,6 +47,20 @@ namespace Torneo_de_Futbol
         {
             return Nombre;        
         }
+
+        public void setGrupo(string Nuevogrupo)
+        {
+            this.Grupo = Nuevogrupo;
+        }
+
+        public string getGrupo()
+        {
+            return Grupo;
+        }
+
+
+
+        //Metodo para generar encuentros
 
     }
 }
