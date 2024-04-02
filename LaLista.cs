@@ -11,14 +11,13 @@ namespace Torneo_de_Futbol
         //Atributos
         private Equipo[] Milista; //aqui guardare los equipos
         private int auxiliar;
-        private int NumeroEquipos;        
-
+        private int NumeroEquipos;
 
         //Constructores
 
         public LaLista()
         {
-            auxiliar= 0;
+            auxiliar = 0;
             NumeroEquipos = 0;
             Milista = new Equipo[10]; //tiene maximo 10, no importa si quedan posiciones sobrando :c
         }
@@ -31,6 +30,7 @@ namespace Torneo_de_Futbol
         }
 
 
+        //Validacion
         public void establecernumeroequipos()
         {
             do
@@ -41,7 +41,7 @@ namespace Torneo_de_Futbol
                     NumeroEquipos = int.Parse(Console.ReadLine());
 
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message + "\n");
                 }
@@ -49,11 +49,12 @@ namespace Torneo_de_Futbol
             } while (NumeroEquipos != 6 && NumeroEquipos != 8 && NumeroEquipos != 10);
         }
 
-        public void PreguntarNombres() //aqui voy a agregar el nombre y grupo de cada equipo
+        //aqui voy a agregar el nombre y grupo de cada equipo
+        public void PreguntarNombres()
         {
             establecernumeroequipos();
             string aux;
-            int aux2=1;
+            int aux2 = 1;
             int contA = 0;
             int contB = 0;
 
@@ -62,8 +63,8 @@ namespace Torneo_de_Futbol
                 Console.WriteLine("\nInserte el nombre del equipo " + aux2 + ":\n");
                 aux = Console.ReadLine();
                 Equipo Gatitos = new Equipo(aux);
-
                 string grupo;
+
                 do
                 {
                     Console.WriteLine("\n¿A qué grupo desea asignar el equipo " + Gatitos.getNombre() + "? (A/B):");
@@ -98,23 +99,26 @@ namespace Torneo_de_Futbol
                 Console.WriteLine("\nEl nombre del equipo " + aux2 + " es: " + Gatitos.getNombre() + " ; Y el grupo al que pertenece es el: " + Gatitos.getGrupo() + "\n");
                 Agregarequipos(Gatitos);
                 aux2++; //nomas por estetica pero aja
-            }while (aux2 < NumeroEquipos+1);
+            } while (aux2 < NumeroEquipos + 1);
+            Console.Clear();
         }
 
-       private void Agregarequipos(Equipo Gatitos) //Para guardar mis objetos de tipo Equipo aqui
+        //Para guardar mis objetos de tipo Equipo aqui
+        private void Agregarequipos(Equipo Gatitos)
         {
             this.Milista[auxiliar] = Gatitos;
             auxiliar++;
         }
 
-        public void Consultarequipos() //para ver el arreglo en pantalla
+        //para ver el arreglo en pantalla
+        public void Consultarequipos()
         {
-           int aux3 = 1;
+            int aux3 = 1;
 
-            for(int i=0;i<NumeroEquipos;i++)
+            for (int i = 0; i < NumeroEquipos; i++)
             {
                 Console.WriteLine("\n*************************************************************");
-                Console.WriteLine("\n*El nombre del equipo " + aux3 + " es: " + Milista[i].getNombre()); 
+                Console.WriteLine("\n*El nombre del equipo " + aux3 + " es: " + Milista[i].getNombre());
                 Console.WriteLine("\n*El grupo al que pertenece es: " + Milista[i].getGrupo());
                 Console.WriteLine("\n*************************************************************");
                 aux3++;
@@ -122,8 +126,204 @@ namespace Torneo_de_Futbol
 
         }
 
+        //Buscando equipos por nombre
+
+        public Equipo BuscarEquipoPorNombreYMostrarGrupo(string nombreEquipo)
+        {
+            Equipo equipoEncontrado = null;
+
+            // Buscar el equipo por nombre
+            foreach (Equipo equipo in Milista)
+            {
+                if (equipo != null)
+                {
+                    if (equipo.getNombre().Equals(nombreEquipo, StringComparison.OrdinalIgnoreCase))
+                    {
+                        equipoEncontrado = equipo;
+                        break;
+                    }
+                }
+            }
+
+            // Si se encontró el equipo, mostrar su información
+            if (equipoEncontrado != null)
+            {
+                Console.WriteLine($"El equipo {equipoEncontrado.getNombre()} pertenece al grupo {equipoEncontrado.getGrupo()} y su posición en la tabla es: {equipoEncontrado.getPosicionTabla()}");
+            }
+            else
+            {
+                Console.WriteLine($"No se encontró un equipo con el nombre {nombreEquipo}");
+            }
+            return equipoEncontrado;
+        }
 
 
+        public void SepararGrupos()
+        {
+            // Crear dos arreglos para los grupos A y B
+            Equipo[] GrupoA = new Equipo[NumeroEquipos / 2];
+            Equipo[] GrupoB = new Equipo[NumeroEquipos / 2];
 
+            // Recorrer la lista de equipos y separarlos por grupo
+            int indiceA = 0, indiceB = 0;
+            for (int i = 0; i < NumeroEquipos; i++)
+            {
+                if (Milista[i] != null)
+                {
+                    if (Milista[i].getGrupo() == "A")
+                    {
+                        GrupoA[indiceA++] = Milista[i];
+                    }
+                    else
+                    {
+                        GrupoB[indiceB++] = Milista[i];
+                    }
+                }
+            }
+
+            // Llamar al método para generar los partidos de cada grupo
+            GenerarMatrizPartidos(GrupoA);
+            GenerarMatrizPartidos(GrupoB);
+        }
+
+
+        public void GenerarMatrizPartidos(Equipo[] grupo)
+        {
+            int grupoSize = grupo.Length;
+
+            for (int i = 0; i < grupoSize ; i++)
+            {
+                for (int j = i + 1; j < grupoSize; j++)
+                {
+                    // Agregar los partidos a la matriz
+                    int[,] partidos = new int[NumeroEquipos, NumeroEquipos];
+                    partidos[i, j] = 1;
+                    partidos[j, i] = 1;
+                }
+            }
+        }
+
+        public void GenerarMatrizPartidos(Equipo[] GrupoA, Equipo[] GrupoB)
+        {
+            int grupoASize = GrupoA.Length;
+            int grupoBSize = GrupoB.Length;
+
+            for (int i = 0; i < grupoASize; i++)
+            {
+                for (int j = i + 1; j < grupoASize; j++)
+                {
+                    // Agregar los partidos a la matriz
+                    int[,] partidos = new int[NumeroEquipos, NumeroEquipos];
+                    partidos[i, j] = 1;
+                    partidos[j, i] = 1;
+                }
+            }
+
+            for (int i = 0; i < grupoBSize; i++)
+            {
+                for (int j = i + 1; j < grupoBSize; j++)
+                {
+                    // Agregar los partidos a la matriz
+                    int[,] partidos = new int[NumeroEquipos, NumeroEquipos];
+                    partidos[i + grupoASize, j + grupoASize] = 1;
+                    partidos[j + grupoASize, i + grupoASize] = 1;
+                }
+            }
+        }
+
+        public void MostrarPartidos(int[,] partidos)
+        {
+            int grupoASize = NumeroEquipos / 2;
+
+            Console.WriteLine("\nPARTIDOS DEL GRUPO A:");
+
+            for (int i = 0; i < grupoASize; i++)
+            {
+                for (int j = 0; j < grupoASize; j++)
+                {
+                    if (partidos[i, j] == 1)
+                    {
+                        Console.WriteLine((i + 1) + " vs " + (j + 1));
+                    }
+                }
+            }
+
+            Console.WriteLine("\nPARTIDOS DEL GRUPO B:");
+
+            for (int i = 0; i < grupoASize; i++)
+            {
+                for (int j = 0; j < grupoASize; j++)
+                {
+                    if (partidos[i + grupoASize, j + grupoASize] == 1)
+                    {
+                        Console.WriteLine((i + 1 + grupoASize) + " vs " + (j + 1 + grupoASize));
+                    }
+                }
+            }
+        }
+
+        public void GuardarMarcador(int[,] partidos, int marcadorLocal, int marcadorVisitante)
+        {
+            int local = 0;
+            int visitante = 0;
+
+            for (int i = 0; i < NumeroEquipos; i++)
+            {
+                for (int j = 0; j < NumeroEquipos; j++)
+                {
+                    if (partidos[i, j] == 1)
+                    {
+                        if (i + 1 == marcadorLocal)
+                        {
+                            local = i;
+                        }
+
+                        if (j + 1 == marcadorVisitante)
+                        {
+                            visitante = j;
+                        }
+                    }
+                }
+            }
+
+            Milista[local].setPartidosJugados(Milista[local].getPartidosJugados() + 1);
+            Milista[local].setGolesFavor(Milista[local].getGolesFavor() + marcadorLocal);
+            Milista[local].setGolesContra(Milista[local].getGolesContra() + marcadorVisitante);
+
+            if (marcadorLocal > marcadorVisitante)
+            {
+                Milista[local].setPartidosGanados(Milista[local].getPartidosGanados() + 1);
+            }
+            else if (marcadorLocal < marcadorVisitante)
+            {
+                Milista[visitante].setPartidosGanados(Milista[visitante].getPartidosGanados() + 1);
+            }
+            else
+            {
+                Milista[local].setPartidosEmpatados(Milista[local].getPartidosEmpatados() + 1);
+                Milista[visitante].setPartidosEmpatados(Milista[visitante].getPartidosEmpatados() + 1);
+            }
+
+            Milista[visitante].setPartidosJugados(Milista[visitante].getPartidosJugados() + 1);
+            Milista[visitante].setGolesFavor(Milista[visitante].getGolesFavor() + marcadorVisitante);
+            Milista[visitante].setGolesContra(Milista[visitante].getGolesContra() + marcadorLocal);
+
+            if (marcadorVisitante > marcadorLocal)
+            {
+                Milista[visitante].setPartidosGanados(Milista[visitante].getPartidosGanados() + 1);
+            }
+            else if (marcadorVisitante < marcadorLocal)
+            {
+                Milista[local].setPartidosGanados(Milista[local].getPartidosGanados() + 1);
+            }
+            else
+            {
+                Milista[local].setPartidosEmpatados(Milista[local].getPartidosEmpatados() + 1);
+                Milista[visitante].setPartidosEmpatados(Milista[visitante].getPartidosEmpatados() + 1);
+            }
+        }
     }
 }
+
+    
+
